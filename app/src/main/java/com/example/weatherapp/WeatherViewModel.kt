@@ -49,9 +49,7 @@ class WeatherViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Fetch weather using current GPS coordinates
-     */
+    // Fetch weather using current GPS coordinates
     fun fetchWeatherByLocation(context: Context, apiKey: String) {
         Log.d("WeatherApp", "fetchWeatherByLocation() started")
         viewModelScope.launch {

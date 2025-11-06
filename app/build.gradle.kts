@@ -73,5 +73,10 @@ dependencies {
 // Geolocation
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
+// For multiple pages
+    implementation("com.google.accompanist:accompanist-pager:0.34.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.34.0")
+
+
 
 }
