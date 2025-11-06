@@ -18,6 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
+import androidx.compose.runtime.*
+
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +40,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun WeatherApp() {
+    // State variable that holds the user’s input
+    var cityName by remember { mutableStateOf("") }
+
+    // State variable to show fake "weather result" for now
+    var weatherResult by remember { mutableStateOf("") }
+
+    // Main layout container
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
@@ -45,16 +58,52 @@ fun WeatherApp() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Title
             Text(
-                text = "Hello, Nash ☀️",
-                fontSize = 26.sp,
+                text = "Weather Search",
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "Your Compose setup is working!")
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Text input field for the city name
+            OutlinedTextField(
+                value = cityName,
+                onValueChange = { cityName = it },
+                label = { Text("Enter city name") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(0.8f)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Search button
+            Button(
+                onClick = {
+                    // temporary fake data until API
+                    if (cityName.isNotBlank()) {
+                        weatherResult = "Fake weather for $cityName: 20°C, Clear ☀️"
+                    } else {
+                        weatherResult = "Please enter a city name!"
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(0.5f)
+            ) {
+                Text("Get Weather")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Result text
+            Text(
+                text = weatherResult,
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
