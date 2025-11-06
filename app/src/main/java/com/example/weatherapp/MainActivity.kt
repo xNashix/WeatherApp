@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 import androidx.compose.material3.MaterialTheme
 import androidx.navigation.compose.NavHost
@@ -19,7 +18,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 import androidx.compose.runtime.*
-
 
 
 class MainActivity : ComponentActivity() {
@@ -39,14 +37,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WeatherApp() {
-    // State variable that holds the user’s input
-    var cityName by remember { mutableStateOf("") }
+fun WeatherApp(viewModel: WeatherViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+    val city = viewModel.cityName
+    val result = viewModel.weatherText
+    val loading = viewModel.isLoading
 
-    // State variable to show fake "weather result" for now
-    var weatherResult by remember { mutableStateOf("") }
-
-    // Main layout container
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +53,6 @@ fun WeatherApp() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Title
             Text(
                 text = "Weather Search",
                 style = MaterialTheme.typography.headlineMedium,
@@ -67,10 +61,9 @@ fun WeatherApp() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Text input field for the city name
             OutlinedTextField(
-                value = cityName,
-                onValueChange = { cityName = it },
+                value = city,
+                onValueChange = { viewModel.cityName = it },
                 label = { Text("Enter city name") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(0.8f)
@@ -78,15 +71,9 @@ fun WeatherApp() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Search button
             Button(
                 onClick = {
-                    // temporary fake data until API
-                    if (cityName.isNotBlank()) {
-                        weatherResult = "Fake weather for $cityName: 20°C, Clear ☀️"
-                    } else {
-                        weatherResult = "Please enter a city name!"
-                    }
+                    viewModel.fetchWeather("fc65ce837195b1e3c4bf5274e681280a")
                 },
                 modifier = Modifier.fillMaxWidth(0.5f)
             ) {
@@ -95,14 +82,18 @@ fun WeatherApp() {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Result text
-            Text(
-                text = weatherResult,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            if (loading) {
+                CircularProgressIndicator()
+            } else {
+                Text(
+                    text = result,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }
+
 
 
 @Preview(showBackground = true)
